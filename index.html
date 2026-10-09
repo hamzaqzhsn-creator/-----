@@ -3,86 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحدي النقاط - لعبة تفاعلية</title>
+    <title>تحدي السرعة - لعبة تفاعلية</title>
     <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
         body {
-            background: linear-gradient(135deg, #0f172a, #1e293b);
+            background: #090d16;
             color: #ffffff;
             font-family: Tahoma, sans-serif;
             text-align: center;
             margin: 0;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             overflow: hidden;
+        }
+        .game-container {
+            width: 100%;
+            max-width: 380px;
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         }
         h1 {
             color: #38bdf8;
-            margin-bottom: 5px;
-            font-size: 24px;
+            margin: 0 0 15px 0;
+            font-size: 22px;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
         }
-        .stats {
-            font-size: 18px;
+        .stats-box {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 12px;
+            padding: 10px;
             margin-bottom: 20px;
-            color: #cbd5e1;
+            font-size: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .stat-item span {
+            color: #38bdf8;
+            font-weight: bold;
         }
         #game-area {
             width: 100%;
-            max-width: 350px;
-            height: 350px;
-            background-color: #334155;
-            border-radius: 15px;
+            height: 320px;
+            background: #0f172a;
+            border-radius: 16px;
             position: relative;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             overflow: hidden;
-            border: 2px solid #475569;
+            border: 2px dashed rgba(56, 189, 248, 0.3);
         }
         #target {
-            width: 70px;
-            height: 70px;
+            width: 65px;
+            height: 65px;
             background: linear-gradient(135deg, #f43f5e, #fb7185);
             border-radius: 50%;
             position: absolute;
             cursor: pointer;
             display: none;
-            box-shadow: 0 5px 15px rgba(244, 63, 94, 0.4);
-            transition: transform 0.1s;
+            box-shadow: 0 0 20px #f43f5e;
+            transition: transform 0.08s ease;
         }
         #target:active {
-            transform: scale(0.9);
+            transform: scale(0.8);
         }
         .btn {
-            background-color: #38bdf8;
+            background: linear-gradient(135deg, #38bdf8, #0284c7);
             color: #0f172a;
             border: none;
-            padding: 12px 25px;
-            font-size: 18px;
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
             font-weight: bold;
-            border-radius: 8px;
+            border-radius: 14px;
             cursor: pointer;
             margin-top: 20px;
-            box-shadow: 0 4px 10px rgba(56, 189, 248, 0.3);
+            box-shadow: 0 8px 20px rgba(56, 189, 248, 0.3);
+            transition: 0.2s;
         }
         .btn:active {
-            transform: scale(0.95);
+            transform: scale(0.97);
         }
     </style>
 </head>
 <body>
 
-    <h1>🎮 تحدي السرعة</h1>
-    <div class="stats">
-        النقاط: <span id="score">0</span> | الوقت: <span id="timer">10</span>ث
-    </div>
+    <div class="game-container">
+        <h1>⚡ تحدي السرعة</h1>
+        
+        <div class="stats-box">
+            <div class="stat-item">النقاط: <span id="score">0</span></div>
+            <div class="stat-item">الوقت: <span id="timer">10</span> ث</div>
+        </div>
 
-    <div id="game-area">
-        <div id="target" onclick="hitTarget()"></div>
-    </div>
+        <div id="game-area">
+            <div id="target" onclick="hitTarget()"></div>
+        </div>
 
-    <button class="btn" id="start-btn" onclick="startGame()">ابدأ اللعبة</button>
+        <button class="btn" id="start-btn" onclick="startGame()">ابدأ التحدي</button>
+    </div>
 
     <script>
         let score = 0;
@@ -116,7 +144,7 @@
                 }
             }, 1000);
 
-            gameInterval = setInterval(moveTarget, 800); // يغير مكانه كل 0.8 ثانية
+            gameInterval = setInterval(moveTarget, 750);
         }
 
         function moveTarget() {
@@ -142,7 +170,7 @@
             clearInterval(timerInterval);
             target.style.display = 'none';
             startBtn.style.display = 'block';
-            startBtn.textContent = 'العب مرة أخرى (النتيجة: ' + score + ')';
+            startBtn.textContent = 'العب مجدداً (نتيجتك: ' + score + ')';
         }
     </script>
 </body>

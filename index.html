@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحدي السرعة - لعبة تفاعلية</title>
+    <title>تحدي السرعة - المتصدرين</title>
     <style>
         * {
             box-sizing: border-box;
             user-select: none;
         }
         body {
-            background: #090d16;
+            background: radial-gradient(circle at center, #1e1b4b, #090d16);
             color: #ffffff;
             font-family: Tahoma, sans-serif;
             text-align: center;
@@ -19,35 +19,34 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
-            overflow: hidden;
         }
         .game-container {
             width: 100%;
             max-width: 380px;
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 24px;
             padding: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            margin-top: 10px;
         }
         h1 {
             color: #38bdf8;
             margin: 0 0 15px 0;
-            font-size: 22px;
-            text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+            font-size: 24px;
+            text-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
         }
         .stats-box {
             display: flex;
             justify-content: space-around;
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(15, 23, 42, 0.7);
             border-radius: 12px;
-            padding: 10px;
-            margin-bottom: 20px;
-            font-size: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
         .stat-item span {
             color: #38bdf8;
@@ -55,12 +54,13 @@
         }
         #game-area {
             width: 100%;
-            height: 320px;
+            height: 280px;
             background: #0f172a;
             border-radius: 16px;
             position: relative;
             overflow: hidden;
-            border: 2px dashed rgba(56, 189, 248, 0.3);
+            border: 2px solid rgba(56, 189, 248, 0.4);
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
         }
         #target {
             width: 65px;
@@ -71,10 +71,24 @@
             cursor: pointer;
             display: none;
             box-shadow: 0 0 20px #f43f5e;
-            transition: transform 0.08s ease;
+            transition: transform 0.05s ease;
         }
         #target:active {
             transform: scale(0.8);
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #475569;
+            background: #0f172a;
+            color: #fff;
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 10px;
         }
         .btn {
             background: linear-gradient(135deg, #38bdf8, #0284c7);
@@ -86,12 +100,42 @@
             font-weight: bold;
             border-radius: 14px;
             cursor: pointer;
-            margin-top: 20px;
             box-shadow: 0 8px 20px rgba(56, 189, 248, 0.3);
             transition: 0.2s;
         }
         .btn:active {
             transform: scale(0.97);
+        }
+        .leaderboard {
+            margin-top: 20px;
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 14px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            text-align: right;
+        }
+        .leaderboard h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: #38bdf8;
+            text-align: center;
+        }
+        ol {
+            margin: 0;
+            padding-right: 20px;
+            font-size: 14px;
+        }
+        li {
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 6px;
+        }
+        .score-val {
+            color: #38bdf8;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -99,17 +143,31 @@
 
     <div class="game-container">
         <h1>⚡ تحدي السرعة</h1>
-        
-        <div class="stats-box">
-            <div class="stat-item">النقاط: <span id="score">0</span></div>
-            <div class="stat-item">الوقت: <span id="timer">10</span> ث</div>
+
+        <div id="start-screen">
+            <div class="input-group">
+                <input type="text" id="player-name" placeholder="أدخل اسمك أو مستعارك..." maxlength="12">
+            </div>
+            <button class="btn" onclick="startGame()">ابدأ اللعبة</button>
         </div>
 
-        <div id="game-area">
-            <div id="target" onclick="hitTarget()"></div>
+        <div id="game-screen" style="display: none;">
+            <div class="stats-box">
+                <div class="stat-item">النقاط: <span id="score">0</span></div>
+                <div class="stat-item">الوقت: <span id="timer">10</span> ث</div>
+            </div>
+
+            <div id="game-area">
+                <div id="target" onclick="hitTarget()"></div>
+            </div>
         </div>
 
-        <button class="btn" id="start-btn" onclick="startGame()">ابدأ التحدي</button>
+        <div class="leaderboard">
+            <h3>🏆 لوحة المتصدرين</h3>
+            <ol id="leaderboard-list">
+                <!-- يتم تعبئتها تلقائياً -->
+            </ol>
+        </div>
     </div>
 
     <script>
@@ -118,19 +176,40 @@
         let gameInterval;
         let timerInterval;
         let isPlaying = false;
+        let playerName = "";
 
         const target = document.getElementById('target');
         const scoreDisplay = document.getElementById('score');
         const timerDisplay = document.getElementById('timer');
-        const startBtn = document.getElementById('start-btn');
+        const startScreen = document.getElementById('start-screen');
+        const gameScreen = document.getElementById('game-screen');
         const gameArea = document.getElementById('game-area');
+        const nameInput = document.getElementById('player-name');
+        const leaderboardList = document.getElementById('leaderboard-list');
+
+        // تحميل النتائج المحفوظة مسبقاً من متصفح اللاعب
+        let leaderboardData = JSON.parse(localStorage.getItem('game_leaderboard')) || [
+            { name: "حمزة (المطور)", score: 25 },
+            { name: "أحمد", score: 18 },
+            { name: "سارة", score: 12 }
+        ];
+
+        updateLeaderboardUI();
 
         function startGame() {
+            playerName = nameInput.value.trim();
+            if (!playerName) {
+                alert("الرجاء إدخال اسمك أولاً!");
+                return;
+            }
+
+            startScreen.style.display = 'none';
+            gameScreen.style.display = 'block';
+
             score = 0;
             timeLeft = 10;
             scoreDisplay.textContent = score;
             timerDisplay.textContent = timeLeft;
-            startBtn.style.display = 'none';
             target.style.display = 'block';
             isPlaying = true;
 
@@ -144,7 +223,7 @@
                 }
             }, 1000);
 
-            gameInterval = setInterval(moveTarget, 750);
+            gameInterval = setInterval(moveTarget, 700);
         }
 
         function moveTarget() {
@@ -169,8 +248,28 @@
             clearInterval(gameInterval);
             clearInterval(timerInterval);
             target.style.display = 'none';
-            startBtn.style.display = 'block';
-            startBtn.textContent = 'العب مجدداً (نتيجتك: ' + score + ')';
+
+            // إضافة النتيجة للقائمة وترتيبها
+            leaderboardData.push({ name: playerName, score: score });
+            leaderboardData.sort((a, b) => b.score - a.score);
+            leaderboardData = leaderboardData.slice(0, 5); // الاحتفاظ بأفضل 5 مراكز فقط
+
+            localStorage.setItem('game_leaderboard', JSON.stringify(leaderboardData));
+            updateLeaderboardUI();
+
+            gameScreen.style.display = 'none';
+            startScreen.style.display = 'block';
+            nameInput.value = '';
+            document.querySelector('#start-screen .btn').textContent = 'العب مرة أخرى (نتيجتك: ' + score + ')';
+        }
+
+        function updateLeaderboardUI() {
+            leaderboardList.innerHTML = '';
+            leaderboardData.forEach(item => {
+                let li = document.createElement('li');
+                li.innerHTML = `<span>${item.name}</span> <span class="score-val">${item.score} نقطة</span>`;
+                leaderboardList.appendChild(li);
+            });
         }
     </script>
 </body>

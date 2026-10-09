@@ -90,6 +90,12 @@
             font-size: 16px;
             margin-bottom: 10px;
         }
+        .error-msg {
+            color: #f43f5e;
+            font-size: 13px;
+            margin-bottom: 10px;
+            display: none;
+        }
         .btn {
             background: linear-gradient(135deg, #38bdf8, #0284c7);
             color: #0f172a;
@@ -147,6 +153,7 @@
         <div id="start-screen">
             <div class="input-group">
                 <input type="text" id="player-name" placeholder="أدخل اسمك أو مستعارك..." maxlength="12">
+                <div id="error-box" class="error-msg">هذا الاسم مستخدم بالفعل، اختر اسمًا آخر!</div>
             </div>
             <button class="btn" onclick="startGame()">ابدأ اللعبة</button>
         </div>
@@ -185,11 +192,11 @@
         const gameScreen = document.getElementById('game-screen');
         const gameArea = document.getElementById('game-area');
         const nameInput = document.getElementById('player-name');
+        const errorBox = document.getElementById('error-box');
         const leaderboardList = document.getElementById('leaderboard-list');
 
-        // تحميل النتائج المحفوظة مسبقاً من متصفح اللاعب
         let leaderboardData = JSON.parse(localStorage.getItem('game_leaderboard')) || [
-            { name: "حمزة (المطور)", score: 25 },
+            { name: "حمزة", score: 25 },
             { name: "أحمد", score: 18 },
             { name: "سارة", score: 12 }
         ];
@@ -198,8 +205,19 @@
 
         function startGame() {
             playerName = nameInput.value.trim();
+            errorBox.style.display = 'none';
+
             if (!playerName) {
-                alert("الرجاء إدخال اسمك أولاً!");
+                errorBox.textContent = "الرجاء إدخال اسمك أولاً!";
+                errorBox.style.display = 'block';
+                return;
+            }
+
+            // التحقق مما إذا كان الاسم موجوداً مسبقاً في القائمة
+            let nameExists = leaderboardData.some(player => player.name.toLowerCase() === playerName.toLowerCase());
+            if (nameExists) {
+                errorBox.textContent = "هذا الاسم مستخدم بالفعل، اختر اسمًا آخر!";
+                errorBox.style.display = 'block';
                 return;
             }
 
@@ -249,10 +267,9 @@
             clearInterval(timerInterval);
             target.style.display = 'none';
 
-            // إضافة النتيجة للقائمة وترتيبها
             leaderboardData.push({ name: playerName, score: score });
             leaderboardData.sort((a, b) => b.score - a.score);
-            leaderboardData = leaderboardData.slice(0, 5); // الاحتفاظ بأفضل 5 مراكز فقط
+            leaderboardData = leaderboardData.slice(0, 5);
 
             localStorage.setItem('game_leaderboard', JSON.stringify(leaderboardData));
             updateLeaderboardUI();
